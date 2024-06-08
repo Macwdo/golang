@@ -1,0 +1,16 @@
+services:
+  mysql:
+    image: mysql:5.7
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: database
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password    
+
+    ports:
+      - "3306:3306"
+    
+    volumes:
+      - ./.data:/var/lib/mysql
+      - ./languages_table.sql:/home/languages_table.sql
