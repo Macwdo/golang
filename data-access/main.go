@@ -57,6 +57,16 @@ func main() {
 		fmt.Printf("[%v][id=%v, name=%q, rating=%v]\n", i, language.Id, language.Name, language.Rating)
 	}
 
+	languageId, err := addLanguage(Language{
+		Name:   "Django",
+		Rating: 5,
+	})
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("Id %v added to language table", languageId)
 }
 
 func allLanguages() ([]Language, error) {
@@ -82,7 +92,6 @@ func allLanguages() ([]Language, error) {
 	}
 
 	return languages, nil
-
 }
 
 func languagesByName(name string) ([]Language, error) {
@@ -105,4 +114,18 @@ func languagesByName(name string) ([]Language, error) {
 		return nil, fmt.Errorf("languagesByName %q: %v", name, err)
 	}
 	return languages, nil
+}
+
+func addLanguage(language Language) (int64, error) {
+	result, err := db.Exec("INSERT INTO languages (name, rating) VALUES (?, ?)", language.Name, language.Rating)
+	if err != nil {
+		return 0, fmt.Errorf("addLanguage: %v", err)
+	}
+
+	id, err := result.LastInsertId()
+	if err != nil {
+		return 0, fmt.Errorf("addLanguage: %v", err)
+	}
+
+	return id, nil
 }
